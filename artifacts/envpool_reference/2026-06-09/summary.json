@@ -1,0 +1,120 @@
+{
+  "envpool_import_error": null,
+  "metalenvpool_partial_rows": [
+    {
+      "device": "cpu",
+      "engine": "metalenvpool",
+      "full_env_execution": false,
+      "metric": "stacked_observations_per_second",
+      "note": "Atari preprocessing and rollout write only; ALE emulator execution is not included.",
+      "task": "Pong-v5",
+      "value": 36709.03501388079
+    },
+    {
+      "device": "mps",
+      "engine": "metalenvpool",
+      "full_env_execution": false,
+      "metric": "stacked_observations_per_second",
+      "note": "Atari preprocessing and rollout write only; ALE emulator execution is not included.",
+      "task": "Pong-v5",
+      "value": 352861.7150801727
+    }
+  ],
+  "rows": [
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 1,
+      "seconds": 1.3331939169438556,
+      "steps_per_env": 5000,
+      "steps_per_second": 3750.3921495994673,
+      "task": "Pong-v5",
+      "total_steps": 5000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 1,
+      "seconds": 0.7158431248972192,
+      "steps_per_env": 5000,
+      "steps_per_second": 6984.770581847664,
+      "task": "Ant-v3",
+      "total_steps": 5000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 1,
+      "seconds": 0.1373440840980038,
+      "steps_per_env": 5000,
+      "steps_per_second": 36404.91713084766,
+      "task": "CheetahRun-v1",
+      "total_steps": 5000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 16,
+      "seconds": 1.7441828340524808,
+      "steps_per_env": 2000,
+      "steps_per_second": 18346.700457801406,
+      "task": "Pong-v5",
+      "total_steps": 32000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 16,
+      "seconds": 0.8647588751045987,
+      "steps_per_env": 2000,
+      "steps_per_second": 37004.53493019008,
+      "task": "Ant-v3",
+      "total_steps": 32000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 16,
+      "seconds": 0.1267237919382751,
+      "steps_per_env": 2000,
+      "steps_per_second": 252517.69624749417,
+      "task": "CheetahRun-v1",
+      "total_steps": 32000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 64,
+      "seconds": 5.784592375042848,
+      "steps_per_env": 2000,
+      "steps_per_second": 22127.74759242251,
+      "task": "Pong-v5",
+      "total_steps": 128000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 64,
+      "seconds": 2.7211203339975327,
+      "steps_per_env": 2000,
+      "steps_per_second": 47039.44856858214,
+      "task": "Ant-v3",
+      "total_steps": 128000
+    },
+    {
+      "engine": "envpool",
+      "full_env_execution": true,
+      "num_envs": 64,
+      "seconds": 0.24716620799154043,
+      "steps_per_env": 2000,
+      "steps_per_second": 517870.145114582,
+      "task": "CheetahRun-v1",
+      "total_steps": 128000
+    }
+  ],
+  "source": "local EnvPool 1.2.5 reference on EnvPool paper task set",
+  "win_assessment": {
+    "reason": "MetalEnvPool has no full-environment execution row for Pong-v5, Ant-v3, or CheetahRun-v1. Partial preprocessing throughput cannot be compared as an EnvPool win.",
+    "status": "not_won"
+  }
+}

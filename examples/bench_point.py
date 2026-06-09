@@ -17,10 +17,11 @@ def main() -> None:
     parser.add_argument("--device", default="auto")
     parser.add_argument("--no-shader", action="store_true")
     parser.add_argument("--action-mode", choices=["zero", "random"], default="zero")
+    parser.add_argument("--seed", type=int, default=7)
     args = parser.parse_args()
 
     pool = MetalPointPool(PointConfig(num_envs=args.num_envs), device=args.device, use_shader=not args.no_shader)
-    pool.reset(seed=7)
+    pool.reset(seed=args.seed)
     actions = pool.zero_actions()
 
     for _ in range(args.warmup):
@@ -42,6 +43,7 @@ def main() -> None:
         "device": str(pool.device),
         "using_shader": pool.using_shader,
         "action_mode": args.action_mode,
+        "seed": args.seed,
         "num_envs": args.num_envs,
         "steps": args.steps,
         "env_steps": args.num_envs * args.steps,

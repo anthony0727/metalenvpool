@@ -1,0 +1,122 @@
+{
+  "num_rows": 3,
+  "rows": [
+    {
+      "action_space": "Discrete(6)",
+      "artifact": "artifacts/envpool_paper_tasks/2026-06-09/pong.json",
+      "coverage": {
+        "env_execution_included": false,
+        "metalenvpool_component": "Atari RGB preprocessing and learner-ready rollout write",
+        "native_dynamics_implemented": false,
+        "note": "ALE emulator stepping is CPU/Gymnasium; MetalEnvPool times preprocessing/write for exact Pong frames."
+      },
+      "devices": {
+        "cpu": {
+          "memory": {
+            "current_allocated_bytes": null,
+            "device": "cpu",
+            "driver_allocated_bytes": null,
+            "recommended_max_bytes": null
+          },
+          "raw_frames_per_second": 73418.07002776158,
+          "seconds": 0.4358599999686703,
+          "stacked_observations_per_second": 36709.03501388079,
+          "using_shader": false
+        },
+        "mps": {
+          "memory": {
+            "current_allocated_bytes": 61524992,
+            "device": "mps",
+            "driver_allocated_bytes": 1082621952,
+            "recommended_max_bytes": 19069665280
+          },
+          "raw_frames_per_second": 705723.4301603454,
+          "seconds": 0.045343542005866766,
+          "stacked_observations_per_second": 352861.7150801727,
+          "using_shader": true
+        }
+      },
+      "iters": 1000,
+      "num_envs": 16,
+      "rollout_steps": 128,
+      "status": "ok",
+      "task": {
+        "family": "atari",
+        "key": "pong",
+        "local_name": "ALE/Pong-v5",
+        "paper_name": "Atari Pong-v5",
+        "paper_role": "isolated environment execution benchmark"
+      }
+    },
+    {
+      "artifact": "artifacts/envpool_paper_tasks/2026-06-09/ant.json",
+      "coverage": {
+        "env_execution_included": false,
+        "metalenvpool_component": null,
+        "native_dynamics_implemented": false,
+        "note": "Exact Ant-v3 is a MuJoCo v2/v3 legacy gym task that currently requires deprecated mujoco-py on this stack. MetalEnvPool has no native Ant dynamics yet."
+      },
+      "error": "(\"No module named 'mujoco_py'. Could not import mujoco_py, which is needed for MuJoCo environments older than V4\", 'You could either use a newer version of the environments, or install the (deprecated) mujoco-py packagefollowing the instructions on their GitHub page.')",
+      "error_type": "DependencyNotInstalled",
+      "status": "blocked",
+      "task": {
+        "family": "mujoco-gym",
+        "key": "ant",
+        "local_name": "Ant-v3",
+        "paper_name": "MuJoCo Ant-v3",
+        "paper_role": "isolated environment execution benchmark"
+      }
+    },
+    {
+      "action_shape": [
+        6
+      ],
+      "artifact": "artifacts/envpool_paper_tasks/2026-06-09/cheetah_run.json",
+      "coverage": {
+        "env_execution_included": true,
+        "metalenvpool_component": null,
+        "native_dynamics_implemented": false,
+        "note": "CPU dm_control reference only; no MetalEnvPool cheetah dynamics implementation yet."
+      },
+      "observation_keys": [
+        "position",
+        "velocity"
+      ],
+      "seconds": 3.783468750072643,
+      "status": "ok",
+      "steps": 200000,
+      "steps_per_second": 52861.544051648365,
+      "task": {
+        "family": "dm_control",
+        "key": "cheetah_run",
+        "local_name": "suite.load('cheetah', 'run')",
+        "paper_name": "dm_control cheetah run",
+        "paper_role": "single-environment speedup baseline"
+      }
+    }
+  ],
+  "source": "EnvPool paper isolated benchmark task set",
+  "tasks": {
+    "ant": {
+      "family": "mujoco-gym",
+      "key": "ant",
+      "local_name": "Ant-v3",
+      "paper_name": "MuJoCo Ant-v3",
+      "paper_role": "isolated environment execution benchmark"
+    },
+    "cheetah_run": {
+      "family": "dm_control",
+      "key": "cheetah_run",
+      "local_name": "suite.load('cheetah', 'run')",
+      "paper_name": "dm_control cheetah run",
+      "paper_role": "single-environment speedup baseline"
+    },
+    "pong": {
+      "family": "atari",
+      "key": "pong",
+      "local_name": "ALE/Pong-v5",
+      "paper_name": "Atari Pong-v5",
+      "paper_role": "isolated environment execution benchmark"
+    }
+  }
+}

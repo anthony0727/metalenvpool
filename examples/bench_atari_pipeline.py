@@ -12,7 +12,8 @@ import torch
 from metalenvpool import AtariPreprocessConfig, MetalAtariPreprocessor, memory_stats, synchronize
 
 
-def synthetic_frames(cfg: AtariPreprocessConfig, device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
+def synthetic_frames(cfg: AtariPreprocessConfig, device: torch.device, seed: int) -> tuple[torch.Tensor, torch.Tensor]:
+    torch.manual_seed(seed)
     a = torch.randint(0, 256, (cfg.num_envs, cfg.in_height, cfg.in_width, 3), device=device, dtype=torch.uint8)
     b = torch.randint(0, 256, (cfg.num_envs, cfg.in_height, cfg.in_width, 3), device=device, dtype=torch.uint8)
     return a, b
@@ -51,6 +52,7 @@ def main() -> None:
     parser.add_argument("--source", choices=["synthetic", "gym"], default="synthetic")
     parser.add_argument("--env-id", default="ALE/Breakout-v5")
     parser.add_argument("--no-shader", action="store_true")
+    parser.add_argument("--seed", type=int, default=7)
     args = parser.parse_args()
 
     cfg = AtariPreprocessConfig(num_envs=args.num_envs, rollout_steps=args.rollout_steps)
@@ -75,7 +77,7 @@ def main() -> None:
         frame_a = frame_a.to(pre.device)
         frame_b = frame_b.to(pre.device)
     else:
-        frame_a, frame_b = synthetic_frames(cfg, pre.device)
+        frame_a, frame_b = synthetic_frames(cfg, pre.device, args.seed)
 
     for i in range(args.warmup):
         pre.step(frame_a, frame_b, i % cfg.rollout_steps)
@@ -95,6 +97,7 @@ def main() -> None:
         "using_shader": pre.using_shader,
         "source": args.source,
         "env_id": args.env_id if args.source == "gym" else None,
+        "seed": args.seed,
         "num_envs": cfg.num_envs,
         "rollout_steps": cfg.rollout_steps,
         "iters": args.iters,

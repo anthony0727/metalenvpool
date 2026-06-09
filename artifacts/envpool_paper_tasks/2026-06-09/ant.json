@@ -1,0 +1,19 @@
+{
+  "artifact": "artifacts/envpool_paper_tasks/2026-06-09/ant.json",
+  "coverage": {
+    "env_execution_included": false,
+    "metalenvpool_component": null,
+    "native_dynamics_implemented": false,
+    "note": "Exact Ant-v3 is a MuJoCo v2/v3 legacy gym task that currently requires deprecated mujoco-py on this stack. MetalEnvPool has no native Ant dynamics yet."
+  },
+  "error": "(\"No module named 'mujoco_py'. Could not import mujoco_py, which is needed for MuJoCo environments older than V4\", 'You could either use a newer version of the environments, or install the (deprecated) mujoco-py packagefollowing the instructions on their GitHub page.')",
+  "error_type": "DependencyNotInstalled",
+  "status": "blocked",
+  "task": {
+    "family": "mujoco-gym",
+    "key": "ant",
+    "local_name": "Ant-v3",
+    "paper_name": "MuJoCo Ant-v3",
+    "paper_role": "isolated environment execution benchmark"
+  }
+}

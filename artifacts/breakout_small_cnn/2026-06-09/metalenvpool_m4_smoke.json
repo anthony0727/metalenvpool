@@ -1,0 +1,17 @@
+{
+  "backend": "metalenvpool-breakout-small-cnn",
+  "device": "mps",
+  "env_id": "ALE/Breakout-v5",
+  "env_steps_per_second": 751.3809962526658,
+  "full_env_execution": true,
+  "last_loss": -0.08603730797767639,
+  "metalenvpool_component": "Atari preprocessing and learner-ready rollout write",
+  "note": "Gymnasium/ALE performs env execution; MetalEnvPool performs fused preprocessing/write on MPS.",
+  "num_envs": 8,
+  "num_updates": 32,
+  "rollout_steps": 16,
+  "seconds": 5.451295708073303,
+  "total_reward": 26.0,
+  "total_timesteps": 4096,
+  "using_shader": true
+}

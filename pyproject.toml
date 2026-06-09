@@ -51,6 +51,20 @@ video = [
 atari = [
   "ale-py>=0.11.0",
 ]
+report = [
+  "matplotlib>=3.9.0",
+]
+envpool-paper = [
+  "ale-py>=0.12.0",
+  "dm-control==1.0.38",
+  "gymnasium-robotics>=1.4.2",
+  "mujoco==3.6.0",
+  "torch>=2.5.0",
+]
+envpool-compare = [
+  "envpool>=1.2.5",
+  "torch>=2.5.0",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -72,6 +86,7 @@ include = [
   "/native",
   "/scripts",
   "/docs",
+  "/artifacts",
   "/README.md",
   "/LICENSE",
 ]
@@ -81,6 +96,7 @@ packages = ["src/metalenvpool"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/metalenvpool/native/atari_preprocess.metal" = "metalenvpool/native/atari_preprocess.metal"
+"src/metalenvpool/native/mpe_simple_step.metal" = "metalenvpool/native/mpe_simple_step.metal"
 "src/metalenvpool/native/point_step.metal" = "metalenvpool/native/point_step.metal"
 "src/metalenvpool/py.typed" = "metalenvpool/py.typed"
 

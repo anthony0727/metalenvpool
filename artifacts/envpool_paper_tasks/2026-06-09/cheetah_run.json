@@ -1,0 +1,27 @@
+{
+  "action_shape": [
+    6
+  ],
+  "artifact": "artifacts/envpool_paper_tasks/2026-06-09/cheetah_run.json",
+  "coverage": {
+    "env_execution_included": true,
+    "metalenvpool_component": null,
+    "native_dynamics_implemented": false,
+    "note": "CPU dm_control reference only; no MetalEnvPool cheetah dynamics implementation yet."
+  },
+  "observation_keys": [
+    "position",
+    "velocity"
+  ],
+  "seconds": 3.783468750072643,
+  "status": "ok",
+  "steps": 200000,
+  "steps_per_second": 52861.544051648365,
+  "task": {
+    "family": "dm_control",
+    "key": "cheetah_run",
+    "local_name": "suite.load('cheetah', 'run')",
+    "paper_name": "dm_control cheetah run",
+    "paper_role": "single-environment speedup baseline"
+  }
+}

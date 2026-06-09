@@ -1,0 +1,80 @@
+{
+  "accelerator": {
+    "colab_tpu_addr": null,
+    "cuda_available": true,
+    "cuda_device_count": 1,
+    "cuda_devices": [
+      "Tesla T4"
+    ],
+    "nvidia_smi": "Tesla T4, 15360 MiB, 580.82.07",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.35",
+    "python": "3.12.13",
+    "torch": "2.11.0+cu128",
+    "torch_xla_available": false,
+    "torch_xla_error": "ModuleNotFoundError: No module named 'torch_xla'",
+    "tpu_name": null,
+    "xrt_tpu_config": null
+  },
+  "backend": "stable-baselines3-ppo",
+  "batch_size": 512,
+  "env_id": "Pendulum-v1",
+  "env_steps_per_second": 5899.191820560487,
+  "eval_episodes": 3,
+  "eval_mean_episode_return": -997.6778074751297,
+  "eval_std_episode_return": 76.28526582341938,
+  "library_versions": {
+    "gymnasium": "1.2.3",
+    "stable_baselines3": "2.8.0",
+    "torch": "2.11.0+cu128"
+  },
+  "matrix": {
+    "accelerator_class": "cuda-gpu",
+    "command": [
+      "colab",
+      "run",
+      "--gpu",
+      "T4",
+      "examples/colab_sb3_gymnasium_benchmark.py",
+      "--env-id",
+      "Pendulum-v1",
+      "--num-envs",
+      "16",
+      "--total-timesteps",
+      "50000",
+      "--vec-env",
+      "dummy",
+      "--seed",
+      "7",
+      "--n-steps",
+      "128",
+      "--batch-size",
+      "512",
+      "--n-epochs",
+      "4",
+      "--device",
+      "auto",
+      "--eval-episodes",
+      "3",
+      "--out",
+      "colab_sb3_gymnasium_result.json"
+    ],
+    "runner_key": "t4",
+    "runner_label": "Colab Tesla T4",
+    "task_family": "classic-control-continuous",
+    "task_key": "pendulum"
+  },
+  "model_device": "cuda",
+  "n_epochs": 4,
+  "n_steps": 128,
+  "note": "TPU runtimes are reported, but SB3/Gymnasium is not TPU-native; expect CPU fallback unless torch-xla interop works.",
+  "num_envs": 16,
+  "requested_device": "auto",
+  "resolved_device": "cuda",
+  "seconds": 8.475737273999925,
+  "total_timesteps": 50000,
+  "transport_warning": {
+    "reason": "colab CLI returned nonzero after emitting a completed JSON result",
+    "returncode": 1
+  },
+  "vec_env": "dummy"
+}

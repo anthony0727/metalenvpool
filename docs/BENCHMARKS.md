@@ -142,9 +142,136 @@ After adding the SB3 benchmark dependencies, the same random-action point benchm
 
 The absolute number varies by run and dependency environment, but the direction is stable: fused Metal is much faster than torch CPU for this simple transition kernel.
 
+## EnvPool Paper Task Matrix
+
+EnvPool's isolated execution benchmark centers on three exact task names:
+Atari Pong-v5, MuJoCo Ant-v3, and dm_control cheetah run. This repo now runs a
+separate matrix for those exact names rather than substituting arbitrary popular
+Gymnasium tasks.
+
+Command:
+
+```bash
+uv run --extra envpool-paper python examples/run_envpool_paper_tasks.py \
+  --out-dir artifacts/envpool_paper_tasks/2026-06-09 \
+  --physics-steps 200000 \
+  --pong-iters 1000
+```
+
+Results:
+
+| Paper task | Local id | Status | MetalEnvPool coverage | Throughput |
+| --- | --- | --- | --- | ---: |
+| Atari Pong-v5 | `ALE/Pong-v5` | ok | Atari RGB preprocessing and rollout write only | MPS 352,862 stacked obs/s; CPU 36,709 |
+| MuJoCo Ant-v3 | `Ant-v3` | blocked | not implemented | - |
+| dm_control cheetah run | `suite.load("cheetah", "run")` | ok | not implemented; CPU reference only | 52,862 steps/s |
+
+Tracked outputs:
+
+- `artifacts/envpool_paper_tasks/2026-06-09/summary.json`
+- `artifacts/envpool_paper_tasks/2026-06-09/summary.md`
+- `artifacts/envpool_paper_tasks/2026-06-09/pong.json`
+- `artifacts/envpool_paper_tasks/2026-06-09/ant.json`
+- `artifacts/envpool_paper_tasks/2026-06-09/cheetah_run.json`
+
+Interpretation: MetalEnvPool does not yet reproduce EnvPool's paper benchmark.
+It covers Pong preprocessing/write for exact Pong frames, but not ALE emulator
+execution, Ant-v3 dynamics, or dm_control cheetah dynamics.
+
+### Local EnvPool Reference
+
+Command:
+
+```bash
+uv run --extra envpool-compare python examples/run_envpool_reference.py \
+  --out-dir artifacts/envpool_reference/2026-06-09 \
+  --num-envs 1 16 64 \
+  --steps-small 5000 \
+  --steps-large 2000
+```
+
+Results:
+
+| Task | EnvPool 1 env | EnvPool 16 envs | EnvPool 64 envs | MetalEnvPool row |
+| --- | ---: | ---: | ---: | --- |
+| `Pong-v5` | 3,750 steps/s | 18,347 steps/s | 22,128 steps/s | 352,862 stacked obs/s, preprocessing only |
+| `Ant-v3` | 6,985 steps/s | 37,005 steps/s | 47,039 steps/s | no full env row |
+| `CheetahRun-v1` | 36,405 steps/s | 252,518 steps/s | 517,870 steps/s | no full env row |
+
+Win assessment: `not_won`. The Pong Metal path is faster than EnvPool's full
+Pong env execution number but it is not the same work; it excludes ALE emulator
+execution.
+
 ## Full PPO Training Checks
 
-### Tensor-Native PPO On MetalPointPool
+### Exact `InvertedDoublePendulum-v5` SB3/Gymnasium Comparison
+
+These rows use the same public Gymnasium/MuJoCo task and the same SB3 PPO
+script. This is the fair public-task comparison.
+
+Commands:
+
+```bash
+uv run --extra video python examples/colab_sb3_gymnasium_benchmark.py \
+  --env-id InvertedDoublePendulum-v5 \
+  --num-envs 8 \
+  --total-timesteps 50000 \
+  --device cpu \
+  --vec-env dummy \
+  --n-steps 512 \
+  --batch-size 1024 \
+  --n-epochs 10 \
+  --no-install \
+  --out runs/mac_idp_cpu_50k.json
+
+uv run --extra video python examples/colab_sb3_gymnasium_benchmark.py \
+  --env-id InvertedDoublePendulum-v5 \
+  --num-envs 8 \
+  --total-timesteps 50000 \
+  --device mps \
+  --vec-env dummy \
+  --n-steps 512 \
+  --batch-size 1024 \
+  --n-epochs 10 \
+  --no-install \
+  --out runs/mac_idp_mps_50k.json
+```
+
+Results:
+
+| Runner | Runtime | Model device | Timesteps | Throughput | Notes |
+| --- | --- | --- | ---: | ---: | --- |
+| SB3 PPO | Apple M4 SoC CPU backend | CPU | 50,000 | 17,223 steps/sec | exact Gymnasium/MuJoCo task |
+| SB3 PPO | Apple M4 SoC MPS GPU backend | MPS | 50,000 | 3,077 steps/sec | exact task, SB3 warned MLP PPO underutilizes GPU |
+| SB3 PPO | Colab TPU v5e1 | CPU | 50,000 | 1,517 steps/sec | TPU runtime exposed `torch_xla`/`xla:0`, but SB3 resolved to CPU |
+
+Tracked outputs:
+
+- `artifacts/rl_hardware_matrix/2026-06-09/idp_mac-cpu.json`
+- `artifacts/rl_hardware_matrix/2026-06-09/idp_mac-mps.json`
+- `artifacts/rl_hardware_matrix/2026-06-09/idp_tpu-v5e1.json`
+- `artifacts/rl_hardware_matrix/2026-06-09/hardware_matrix.json`
+
+Interpretation: on the exact public task, this repo does not yet show a
+MetalEnvPool win. SB3/Gymnasium is memory/sync heavy and MLP PPO underutilizes
+GPU backends; MPS loses to the Apple M4 SoC CPU backend here. A fair MetalEnvPool
+win requires implementing the same task dynamics as a tensor-native env, not
+comparing against a custom PointMass task.
+
+### Representative RL Hardware Matrix
+
+The broader public-task control matrix covers `CartPole-v1`, `Pendulum-v1`, and
+`InvertedDoublePendulum-v5` with the same SB3 PPO runner across the Apple M4 SoC
+CPU backend, Apple M4 SoC MPS GPU backend, Colab CUDA GPU, and Colab TPU-runtime
+CPU fallback:
+
+- results: `artifacts/rl_hardware_matrix/2026-06-09/hardware_matrix.md`
+- doc: `docs/RL_HARDWARE_MATRIX.md`
+
+The matrix is a hardware/framework control. It is not a tensor-native
+MetalEnvPool win claim.
+
+### Custom Tensor-Native PPO On MetalPointPool
 
 Command:
 
@@ -168,10 +295,41 @@ Result:
 - throughput: 834,506 env-steps/sec
 - mean rollout reward at final iteration: -3.951
 
-This is a full PPO rollout/update loop over the tensor-native PointMass task.
-It is the speed demonstration for the `TensorEnv` API: actions, observations,
-rewards, done masks, autoreset, rollout tensors, and learner updates stay on
-MPS during the hot path.
+This is a full PPO rollout/update loop over the tensor-native PointMass task,
+not a fair `InvertedDoublePendulum-v5` comparison. It is the speed demonstration
+for the `TensorEnv` API: actions, observations, rewards, done masks, autoreset,
+rollout tensors, and learner updates stay on MPS during the hot path.
+
+### Custom Tensor-Native PPO On MetalMPESimplePool
+
+Command:
+
+```bash
+uv run --extra torch python examples/train_mpe_simple_ppo.py \
+  --num-envs 8192 \
+  --num-steps 64 \
+  --total-timesteps 4194304 \
+  --num-minibatches 8 \
+  --update-epochs 2 \
+  --device auto
+```
+
+Result:
+
+- backend: `metalenvpool-mpe-simple-ppo`
+- device: `mps`
+- fused env shader: true
+- total timesteps: 4,194,304
+- seconds: 3.981
+- throughput: 1,053,625 env-steps/sec
+- first mean rollout reward: -1.050
+- final mean rollout reward: -0.841
+- deterministic eval mean episode return after training: -19.306
+
+`MetalMPESimplePool` is a tensor-native MPE Simple-style particle task, not a
+full PettingZoo wrapper. It uses one agent, one landmark, observation
+`[vx, vy, landmark_rel_x, landmark_rel_y]`, and continuous action channels
+`[noop, left, right, down, up]`.
 
 ### Local PPO Baselines
 
@@ -186,6 +344,34 @@ These are executable local references, not exact task-matched comparisons.
 LeanRL's published headline numbers are CUDA/H100-oriented. On this Mac, the
 local LeanRL `torchcompile` CPU path is slower than the plain script because it
 does not get the CUDA graph path that LeanRL is designed around.
+
+### Colab SB3/Gymnasium Commands
+
+Command:
+
+```bash
+colab run --gpu T4 examples/colab_sb3_gymnasium_benchmark.py \
+  --env-id InvertedDoublePendulum-v5 \
+  --num-envs 8 \
+  --total-timesteps 50000 \
+  --device auto \
+  --vec-env dummy \
+  --n-steps 512 \
+  --batch-size 1024 \
+  --n-epochs 10
+
+colab run --tpu v5e1 examples/colab_sb3_gymnasium_benchmark.py \
+  --env-id InvertedDoublePendulum-v5 \
+  --num-envs 8 \
+  --total-timesteps 50000 \
+  --device auto \
+  --vec-env dummy \
+  --n-steps 512 \
+  --batch-size 1024 \
+  --n-epochs 10
+```
+
+The measured Colab outputs are included in the exact public-task table above.
 
 ### Trained Public-Env Rollout
 

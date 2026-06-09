@@ -1,0 +1,15 @@
+{
+  "backend": "envpool-breakout-small-cnn",
+  "device": "mps",
+  "env_id": "Breakout-v5",
+  "env_steps_per_second": 929.6735230988126,
+  "full_env_execution": true,
+  "last_loss": -0.1415712982416153,
+  "note": "EnvPool performs full Atari env execution and returns stacked 84x84 observations.",
+  "num_envs": 8,
+  "num_updates": 32,
+  "rollout_steps": 16,
+  "seconds": 4.405847750022076,
+  "total_reward": 34.0,
+  "total_timesteps": 4096
+}

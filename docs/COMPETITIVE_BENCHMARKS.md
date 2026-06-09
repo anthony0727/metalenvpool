@@ -74,19 +74,32 @@ Purpose: compare against single-file optimized PPO implementations.
 
 This repo should not vendor those projects casually. The benchmark runner should call checked-out upstream scripts with pinned commit SHAs and capture JSON/CSV output. Comparable setup means the same env, same network, same rollout length, same minibatch size, same update count, and same seed set.
 
-Local check:
+Local non-public-task check:
 
 | Runner | Task | Device | Timesteps | Throughput |
 | --- | --- | --- | ---: | ---: |
 | MetalEnvPool tensor PPO | PointMass `TensorEnv` | MPS | 4,194,304 | 834,506 steps/sec |
+| MetalEnvPool tensor PPO | MPE Simple-style `TensorEnv` | MPS | 4,194,304 | 1,053,625 steps/sec |
 | LeanRL PPO | `Pendulum-v1` | CPU | 131,072 | 13,850 steps/sec |
 | LeanRL PPO + `torch.compile` | `Pendulum-v1` | CPU | 131,072 | 5,100 steps/sec |
 | Stable-Baselines3 PPO | `Pendulum-v1` | CPU | 1,048,576 | 34,555 steps/sec |
 
-This wins the local LeanRL-style training-speed check, but it is not a
-task-matched public benchmark because the fast lane uses a custom tensor-native
-PointMass task. Treat it as evidence that the API shape works, not as a public
-MuJoCo/Atari leaderboard result.
+This is not a task-matched public benchmark because the fast lanes use custom
+tensor-native tasks. Treat it as evidence that the API shape works, not as a
+public MuJoCo/Atari leaderboard result.
+
+Exact public-task check on `InvertedDoublePendulum-v5` with SB3/Gymnasium:
+
+| Runner | Runtime | Model device | Timesteps | Throughput |
+| --- | --- | --- | ---: | ---: |
+| SB3 PPO | Apple M4 SoC CPU backend | CPU | 50,000 | 17,223 steps/sec |
+| SB3 PPO | Apple M4 SoC MPS GPU backend | MPS | 50,000 | 3,077 steps/sec |
+| SB3 PPO | Colab TPU v5e1 | CPU fallback | 50,000 | 1,517 steps/sec |
+
+On the exact public task, MetalEnvPool does not yet have a fair result because
+the repo does not implement `InvertedDoublePendulum-v5` dynamics as a
+tensor-native env. The next real milestone is a public task implemented under
+`TensorEnv`, then compared against these SB3/Gymnasium baselines.
 
 ### Lane 4: Atari / Breakout
 

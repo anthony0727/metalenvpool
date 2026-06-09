@@ -1,0 +1,7 @@
+{
+  "backend": "envpool-breakout-small-cnn",
+  "accelerator_request": "Colab A100",
+  "status": "blocked",
+  "reason": "Colab backend rejected accelerator A100 for this account/quota.",
+  "command": "colab run --gpu A100 examples/train_breakout_small_cnn_compare.py --backend envpool --device auto --num-envs 16 --rollout-steps 32 --total-timesteps 32768 --output-json breakout_envpool_a100.json"
+}

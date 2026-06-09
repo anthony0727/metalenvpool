@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
 
-SHADER_SOURCES = ("atari_preprocess.metal", "point_step.metal")
+SHADER_SOURCES = ("atari_preprocess.metal", "mpe_simple_step.metal", "point_step.metal")
 
 
 @dataclass(frozen=True)
