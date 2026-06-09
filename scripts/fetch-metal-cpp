@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="${METAL_CPP_VERSION:-26.4}"
+URL="${METAL_CPP_URL:-https://developer.apple.com/metal/cpp/files/metal-cpp_${VERSION}.zip}"
+ROOT="${METAL_CPP_ROOT:-third_party/metal-cpp}"
+TMP="${TMPDIR:-/tmp}/metalenvpool-metal-cpp"
+
+mkdir -p "$TMP" third_party
+rm -rf "$TMP/metal-cpp" "$TMP/metal-cpp.zip"
+
+curl -fsSL "$URL" -o "$TMP/metal-cpp.zip"
+unzip -q "$TMP/metal-cpp.zip" -d "$TMP"
+rm -rf "$ROOT"
+mv "$TMP/metal-cpp" "$ROOT"
+
+printf '%s\n' "$ROOT"

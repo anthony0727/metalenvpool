@@ -1,0 +1,27 @@
+{
+  "backend": "stable-baselines3-ppo",
+  "batch_size": 1024,
+  "device": "cpu",
+  "env_id": "InvertedDoublePendulum-v5",
+  "env_steps_per_second": 18687.67572546128,
+  "eval_episodes": 3,
+  "eval_max_return": 9323.426290199888,
+  "eval_mean_return": 9323.355609771641,
+  "eval_returns": [
+    9323.426290199888,
+    9323.214559813128,
+    9323.425979301908
+  ],
+  "model_path": "runs/ppo_rollouts/InvertedDoublePendulum-v5_ppo.zip",
+  "n_epochs": 10,
+  "n_steps": 512,
+  "num_envs": 8,
+  "seconds": 53.51120250002714,
+  "total_timesteps": 1000000,
+  "vec_env": "dummy",
+  "video_fps": 30,
+  "video_frames": 1001,
+  "video_path": "runs/ppo_rollouts/InvertedDoublePendulum-v5_ppo_rollout.mp4",
+  "video_return": 9323.986188865374,
+  "video_steps": 1000
+}

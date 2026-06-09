@@ -1,0 +1,89 @@
+[project]
+name = "metalenvpool"
+version = "0.1.0"
+description = "EnvPool-style batched reinforcement learning environments for Apple Metal/MPS."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11,<3.13"
+keywords = ["reinforcement-learning", "gymnasium", "metal", "mps", "apple-silicon", "envpool"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "gymnasium>=1.1.1",
+  "numpy>=2.0.0",
+]
+
+[project.scripts]
+metalenvpool-build-native = "metalenvpool.native.build:main"
+
+[project.optional-dependencies]
+torch = ["torch>=2.5.0"]
+test = [
+  "pytest>=8.0.0",
+  "torch>=2.5.0",
+]
+dev = [
+  "ninja>=1.11.0",
+  "pytest>=8.0.0",
+  "ruff>=0.8.0",
+  "torch>=2.5.0",
+]
+bench = [
+  "stable-baselines3>=2.7.0",
+  "tensorboard>=2.20.0",
+  "torch>=2.5.0",
+]
+video = [
+  "gymnasium[mujoco]>=1.1.1",
+  "imageio>=2.34.0",
+  "imageio-ffmpeg>=0.5.1",
+  "stable-baselines3>=2.7.0",
+  "torch>=2.5.0",
+]
+atari = [
+  "ale-py>=0.11.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+exclude = ["archive"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.hatch.build]
+include = [
+  "/src",
+  "/tests",
+  "/examples",
+  "/native",
+  "/scripts",
+  "/docs",
+  "/README.md",
+  "/LICENSE",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/metalenvpool"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/metalenvpool/native/atari_preprocess.metal" = "metalenvpool/native/atari_preprocess.metal"
+"src/metalenvpool/native/point_step.metal" = "metalenvpool/native/point_step.metal"
+"src/metalenvpool/py.typed" = "metalenvpool/py.typed"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
