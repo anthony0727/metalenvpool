@@ -100,47 +100,54 @@ The active runtime still uses `torch.mps.compile_shader` because it can operate 
 
 ### Fused PointMass
 
+The benchmark auto-resets terminated and truncated slots on every step. Older
+results produced before this invariant was enforced timed inactive slots after
+the warm-up reached `PointConfig.max_steps`; those numbers are intentionally no
+longer treated as valid environment-throughput evidence.
+
 Command:
 
 ```bash
-uv run python examples/bench_point.py --num-envs 65536 --steps 10000 --warmup 200 --device mps --action-mode zero
+uv run python examples/bench_point.py --num-envs 65536 --steps 1000 --warmup 200 --device mps --action-mode zero --seed 7
 ```
 
 Result:
 
+- aggregation: median of 3 consecutive runs (range shown below)
 - device: `mps`
 - backend: custom Metal shader
-- env steps: 655,360,000
-- seconds: 2.976
-- throughput: 220,205,586 env-steps/sec
+- env steps: 65,536,000
+- median seconds: 0.536
+- median throughput: 122,310,140 env-steps/sec
+- throughput range: 89,287,193–127,481,732 env-steps/sec
 - current allocated memory: 2,752,512 bytes
 
 CPU comparison:
 
 ```bash
-uv run python examples/bench_point.py --num-envs 65536 --steps 10000 --warmup 200 --device cpu --action-mode zero
+uv run python examples/bench_point.py --num-envs 65536 --steps 1000 --warmup 200 --device cpu --action-mode zero --seed 7
 ```
 
-- throughput: 60,816,787 env-steps/sec
+- median throughput: 24,424,726 env-steps/sec
+- throughput range: 23,989,920–24,589,355 env-steps/sec
 
 Random-action MPS run:
 
 ```bash
-uv run python examples/bench_point.py --num-envs 65536 --steps 1000 --warmup 100 --device mps --action-mode random
+uv run python examples/bench_point.py --num-envs 65536 --steps 1000 --warmup 200 --device mps --action-mode random --seed 7
 ```
 
-- throughput: 174,068,617 env-steps/sec
+- median throughput: 92,262,469 env-steps/sec
+- throughput range: 73,284,754–106,173,930 env-steps/sec
 
 CPU random-action comparison:
 
-- throughput: 50,977,453 env-steps/sec
+- median throughput: 23,353,427 env-steps/sec
+- throughput range: 22,514,388–23,729,398 env-steps/sec
 
-After adding the SB3 benchmark dependencies, the same random-action point benchmark was rerun:
-
-- MPS fused shader: 131,346,196 env-steps/sec
-- CPU torch fallback: 27,582,702 env-steps/sec
-
-The absolute number varies by run and dependency environment, but the direction is stable: fused Metal is much faster than torch CPU for this simple transition kernel.
+The absolute number varies by run and dependency environment. These rows include
+device-side autoreset work and keep all timed slots active; the fused Metal path
+remains materially faster than the torch CPU path for this simple transition.
 
 ## EnvPool Paper Task Matrix
 

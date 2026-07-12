@@ -255,7 +255,9 @@ uv run --extra torch python examples/train_metalpoint_ppo.py --num-envs 8192 --n
 uv run --extra torch python examples/train_mpe_simple_ppo.py --num-envs 8192 --num-steps 64 --total-timesteps 4194304 --device auto
 ```
 
-On the local Apple Silicon verification run, the fused PointMass shader reached about 220M env-steps/sec with fixed actions and 174M env-steps/sec with random actions. See `docs/BENCHMARKS.md`.
+The PointMass benchmark auto-resets completed slots during warm-up and timing,
+so reported throughput includes active environment dynamics and reset work. See
+`docs/BENCHMARKS.md` for reproducible commands and current measurements.
 
 The real benchmark target is full RL training throughput against Gymnasium, Stable-Baselines3, CleanRL, LeanRL-style baselines, and EnvPool where the setup is comparable. See `docs/COMPETITIVE_BENCHMARKS.md`.
 

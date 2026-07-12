@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from metalenvpool import MetalPointPool, PointConfig
+from metalenvpool import MetalPointPool, PointConfig, step_with_autoreset
 
 
 def point_cfg(**kwargs):
@@ -63,6 +63,24 @@ def test_point_reset_done_resets_selected_slots_without_sync_query():
     assert not torch.equal(pool.target[3], old_target[3])
     assert pool.steps.tolist() == [1, 0, 3, 0]
     assert pool.terminated.tolist() == [False, False, False, False]
+
+
+def test_benchmark_step_keeps_environments_active_after_episode_limit():
+    pool = MetalPointPool(point_cfg(num_envs=4, max_steps=2), device="cpu", use_shader=False)
+    pool.reset(seed=23)
+    action = torch.zeros(pool.action_shape)
+
+    first = step_with_autoreset(pool, action)
+    completed = step_with_autoreset(pool, action)
+    for _ in range(4):
+        step_with_autoreset(pool, action)
+
+    assert not first.truncated.any()
+    assert completed.truncated.all()
+    assert completed.info["steps"].tolist() == [pool.cfg.max_steps] * pool.cfg.num_envs
+    assert not pool.terminated.any()
+    assert not pool.truncated.any()
+    assert max(pool.steps.tolist()) < pool.cfg.max_steps
 
 
 @pytest.mark.skipif(not torch.backends.mps.is_available(), reason="MPS is not available")

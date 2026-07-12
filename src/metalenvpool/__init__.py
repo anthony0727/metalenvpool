@@ -23,6 +23,7 @@ __all__ = [
     "memory_stats",
     "resolve_device",
     "synchronize",
+    "step_with_autoreset",
 ]
 
 _EXPORTS = {
@@ -43,6 +44,7 @@ _EXPORTS = {
     "memory_stats": ("metalenvpool.device", "memory_stats"),
     "resolve_device": ("metalenvpool.device", "resolve_device"),
     "synchronize": ("metalenvpool.device", "synchronize"),
+    "step_with_autoreset": ("metalenvpool.point", "step_with_autoreset"),
 }
 
 

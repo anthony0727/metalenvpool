@@ -6,7 +6,7 @@ import argparse
 import json
 import time
 
-from metalenvpool import MetalPointPool, PointConfig, memory_stats, synchronize
+from metalenvpool import MetalPointPool, PointConfig, memory_stats, step_with_autoreset, synchronize
 
 
 def main() -> None:
@@ -27,14 +27,14 @@ def main() -> None:
     for _ in range(args.warmup):
         if args.action_mode == "random":
             actions = pool.sample_random_actions()
-        pool.step(actions)
+        step_with_autoreset(pool, actions)
     synchronize(pool.device)
 
     t0 = time.perf_counter()
     for _ in range(args.steps):
         if args.action_mode == "random":
             actions = pool.sample_random_actions()
-        pool.step(actions)
+        step_with_autoreset(pool, actions)
     synchronize(pool.device)
     dt = time.perf_counter() - t0
 
@@ -42,6 +42,7 @@ def main() -> None:
     out = {
         "device": str(pool.device),
         "using_shader": pool.using_shader,
+        "autoreset": True,
         "action_mode": args.action_mode,
         "seed": args.seed,
         "num_envs": args.num_envs,

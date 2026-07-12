@@ -215,4 +215,20 @@ def _point_shader():
     return torch.mps.compile_shader(shader_source("point_step.metal"))
 
 
-__all__ = ["MetalPointPool", "PointConfig"]
+def step_with_autoreset(pool: MetalPointPool, actions: torch.Tensor) -> StepResult:
+    """Step a point pool and reset completed slots without a host sync."""
+    result = pool.step(actions)
+    terminated = result.terminated.clone()
+    truncated = result.truncated.clone()
+    info = {**result.info, "steps": result.info["steps"].clone()}
+    next_obs = pool.reset_done(terminated | truncated)
+    return StepResult(
+        obs=next_obs,
+        reward=result.reward,
+        terminated=terminated,
+        truncated=truncated,
+        info=info,
+    )
+
+
+__all__ = ["MetalPointPool", "PointConfig", "step_with_autoreset"]
