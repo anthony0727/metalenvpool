@@ -78,7 +78,7 @@ Local non-public-task check:
 
 | Runner | Task | Device | Timesteps | Throughput |
 | --- | --- | --- | ---: | ---: |
-| MetalEnvPool tensor PPO | PointMass `TensorEnv` | MPS | 4,194,304 | 834,506 steps/sec |
+| MetalEnvPool tensor PPO | PointMass `TensorEnv` | MPS | 4,194,304 | 696,638 median steps/sec (4 runs) |
 | MetalEnvPool tensor PPO | MPE Simple-style `TensorEnv` | MPS | 4,194,304 | 1,053,625 steps/sec |
 | LeanRL PPO | `Pendulum-v1` | CPU | 131,072 | 13,850 steps/sec |
 | LeanRL PPO + `torch.compile` | `Pendulum-v1` | CPU | 131,072 | 5,100 steps/sec |

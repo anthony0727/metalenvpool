@@ -127,7 +127,7 @@ Custom tensor-env speed demo:
 
 | Lane | Task | Device | Timesteps | Steps/sec | Result |
 | --- | --- | --- | ---: | ---: | --- |
-| MetalEnvPool tensor PPO | PointMass `TensorEnv` | MPS | 4,194,304 | 834,506 | custom env, full rollout/update loop |
+| MetalEnvPool tensor PPO | PointMass `TensorEnv` | MPS | 4,194,304 | 696,638 median | custom env, full rollout/update loop; 4 runs |
 | MetalEnvPool tensor PPO | MPE Simple-style `TensorEnv` | MPS | 4,194,304 | 1,053,625 | custom env, full rollout/update loop |
 
 The PointMass and MPE Simple-style rows are not fair `InvertedDoublePendulum-v5` comparisons. A fair MetalEnvPool win needs a tensor-native implementation of the same public task dynamics, not a custom toy env.

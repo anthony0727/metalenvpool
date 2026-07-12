@@ -145,6 +145,11 @@ CPU random-action comparison:
 - median throughput: 23,353,427 env-steps/sec
 - throughput range: 22,514,388–23,729,398 env-steps/sec
 
+Median MPS/CPU speedup is 5.01x for zero actions and 3.95x for random
+actions. These are comparisons of the same active PointMass transition and
+autoreset path on this machine, not comparisons with EnvPool or a public RL
+task.
+
 The absolute number varies by run and dependency environment. These rows include
 device-side autoreset work and keep all timed slots active; the fused Metal path
 remains materially faster than the torch CPU path for this simple transition.
@@ -298,14 +303,18 @@ Result:
 - device: `mps`
 - fused env shader: true
 - total timesteps: 4,194,304
-- seconds: 5.026
-- throughput: 834,506 env-steps/sec
+- aggregation: median of 4 runs in the current dependency environment
+- median seconds: 6.022
+- median throughput: 696,638 env-steps/sec
+- throughput range: 501,216–753,100 env-steps/sec
 - mean rollout reward at final iteration: -3.951
 
 This is a full PPO rollout/update loop over the tensor-native PointMass task,
 not a fair `InvertedDoublePendulum-v5` comparison. It is the speed demonstration
 for the `TensorEnv` API: actions, observations, rewards, done masks, autoreset,
-rollout tensors, and learner updates stay on MPS during the hot path.
+rollout tensors, and learner updates stay on MPS during the hot path. The fixed
+seed produced the same final rollout reward in all four runs; this short run is
+throughput evidence, not evidence that PPO learned a strong policy.
 
 ### Custom Tensor-Native PPO On MetalMPESimplePool
 
